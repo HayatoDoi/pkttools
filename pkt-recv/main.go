@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/HayatoDoi/pkttools/pkt"
+	"github.com/HayatoDoi/pkt"
 	"os"
 	"syscall"
 	"unsafe"
@@ -21,16 +21,15 @@ type ifReq struct {
 
 func main() {
 	fd, err := syscall.Socket(syscall.AF_PACKET, syscall.SOCK_RAW, int(pkt.Htons(syscall.ETH_P_ALL)))
-	// _, err := syscall.Socket(syscall.AF_PACKET, syscall.SOCK_RAW, int(pkt.Htons(syscall.ETH_P_ALL)))
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
 
 	var ifr ifReq
-	fmt.Println(ifr)
-	copy(ifr.Name[:15], "br-123293634eeb")
-	fmt.Println(ifr)
+	// fmt.Println(ifr)
+	copy(ifr.Name[:15], "enp0s3")
+	// fmt.Println(ifr) //debug
 	err = pkt.Ioctl(uintptr(fd), uintptr(syscall.SIOCGIFINDEX), uintptr(unsafe.Pointer(&ifr)))
 	if err != nil {
 		fmt.Println(err)
@@ -39,12 +38,6 @@ func main() {
 	f := os.NewFile(uintptr(fd), fmt.Sprintf("fd %d", fd))
 
 	for {
-		buf := make([]byte, 1024)
-		numRead, err := f.Read(buf)
-		if err != nil {
-			fmt.Println(err)
-			panic(err)
-		}
-		fmt.Printf("%X\n", buf[:numRead])
+		pkt.Print(f)
 	}
 }
