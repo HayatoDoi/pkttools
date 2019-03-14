@@ -2,13 +2,13 @@ package main
 
 import (
 	"../hex"
+	"fmt"
 	"github.com/HayatoDoi/pkt"
 	flags "github.com/jessevdk/go-flags"
 	"os"
-	"fmt"
 )
 
-type Options struct{
+type Options struct {
 	InterfaceName string `short:"I" required:"true" description:"Set interface name."`
 }
 
